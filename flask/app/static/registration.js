@@ -12,7 +12,7 @@ function send() {
 			$block.append("<p id = \"paslen\" align=\"center\" style=\"color: red;\">Длина пароля не может быть меньше 6</p>");
 		return;
 	}
-	check_login($login, $password, $name);
+	check_login($login, $password, $name, $school, $classs);
 
 }
 function refresh() {

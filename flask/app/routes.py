@@ -67,7 +67,7 @@ def correct_reg():
 	password = str(request.args.get('password'))
 	name = request.args.get('name').encode('utf-8')
 	school = str(request.args.get('school'))
-	classs = request.args.get('classs').encode('utf-8')
+	classs = request.args.get('class').encode('utf-8')
 	f = open('database.json','r')
 	s = f.read().decode('utf-8')
 	u = json.loads(s)
@@ -75,7 +75,7 @@ def correct_reg():
 		if(i['login'] == login):
 			return 'error'
 
-	u.append({"login":login,"password":password,"name":name, role: "pupil","school":school,"classs":classs})
+	u.append({"login":login,"password":password,"name":name, "role": "pupil","school":school,"class":classs})
 	s = json.dumps(u)
 	f.close()
 	f = open('database.json','w')
@@ -87,7 +87,7 @@ def correct_reg():
 	return url_for('index',username=name,login=login)
 
 def append_to_class(school, classs, login, name):
-	f = open('hierarchy.json',r)
+	f = open('hierarchy.json','r')
 	s = f.read().decode('utf-8')
 	u = json.loads(s)
 	for sch in u:
@@ -184,4 +184,19 @@ def set_teacher():
 					q.write(json.dumps(u))
 					q.close()
 					return 'success'
+	return 'success'
+
+@app.route('/invite_save', methods=['POST'])
+def invite_save():
+	jsdata = request.form.get('str')
+	u = json.loads(jsdata)
+	f = open('waiting_list.json','r')
+	s = f.read().decode('utf-8')
+	f.close()
+	data = json.loads(s)
+	for i in u:
+		data.append(i)
+	f = open('waiting_list.json','w')
+	f.write(json.dumps(data))
+	f.close()
 	return 'success'

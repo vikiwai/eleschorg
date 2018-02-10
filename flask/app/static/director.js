@@ -6,6 +6,14 @@ $(document).ready(function() {
 		outputInfo();
 		
 	});
+	$('#add_field').click(function(){
+		addField();
+		
+	});
+	$('#save_fields').click(function(){
+		saveFields();
+	});
+
 	function getData() {
 		$.ajax({type: "GET", url:"/get_teachers", data:{'school': school}, async:false, success: function( data ){ teachers = JSON.parse(data);  }});
 	}
@@ -31,6 +39,29 @@ $(document).ready(function() {
 		$('.teacher').click(function(){
 			console.log(teachers.classes);
 			addClass(this.id);
+		});
+	}
+	function saveFields() {
+		$fields = $('.dirik');
+		var arr = [];
+		console.log($fields.length);
+		$fields.each(function(i,elem){
+			name = $(elem).find("input[name='name']").val();
+			cl = $(elem).find("input[name='cl']").val();
+			role = $(elem).find("select[name='role']").val();
+			invite = Math.random().toString(36).substring(2, 12);
+			arr.push({"school": school, "name": name, "class": cl, "role": role, "invite": invite});
+		});
+		$.ajax({type: "POST", url:"/invite_save", data:{'str': JSON.stringify(arr)}, async:false, success: function( data ){ console.log(data);  }});
+	}
+	function addField() {
+		$area = $("#add_person");
+		select = '<select name="role"><option>Учитель</option><option>Ученик</option></select>'
+		html = '<div class="dirik"><input type="text" value="Имя Фамилия" class="dir_add" name="name"><input type="text" value="Класс" class="dir_add" name="cl">'+select;
+
+		$(html).appendTo($area);
+		$('.dir_add').click(function(){
+			this.value="";
 		});
 	}
 	function addClass(name) {
