@@ -1,0 +1,36 @@
+<html>
+<head>
+	<title>Авторизация</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='loginstyle.css') }}">
+	<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js' charset="utf-8"></script>
+	<script type='text/javascript' src='{{ url_for('static', filename='libs/jquery-ui-1.8rc3.custom.min.js') }}' charset="utf-8"></script>
+	<script type='text/javascript' src='{{ url_for('static', filename='login.js') }}' charset="utf-8"></script>
+</head>
+<body>
+	<div id="header"></div>
+	<div id="login-form">
+	<form class="form-3">
+		<div id="textlog">
+	    <p class="clearfix">
+	        <div id="login_block">
+	        <input type="text" name="login" id="login" placeholder="Логин" onclick="refresh()">
+	    	</div>
+	    </p>
+	    <p class="clearfix">
+	        <div id="password_block">
+	        <input type="password" name="password" id="password" placeholder="Пароль" onclick="refresh()">
+	    	</div>
+	    </p>
+		</div>
+	    <div class="regbut">
+		    <div class="reg" id="reglink">
+		        <a href="/registration.html" id="registration"> Регистрация </a>
+		    </div>
+		    <div class="reg">
+		        <button type="button" id="button" onclick="send()">Войти</button>
+		    </div>  
+	    </div>    
+	</form>
+	</div>
+</body>
+</html>
