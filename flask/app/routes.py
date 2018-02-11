@@ -244,7 +244,7 @@ def cur_invites():
 
 @app.route('/del_invites', methods=['POST'])
 def del_invites():
-	jsdata = request.args.get('invite')
+	jsdata = request.form.get('invite')
 	f = open("waiting_list.json", "r")
 	s = f.read().decode('utf-8')
 	f.close()
@@ -255,4 +255,5 @@ def del_invites():
 	s = json.dumps(arr)
 	f = open("waiting_list.json", "w")
 	f.write(s)
-	return 'success'
+	f.close()
+	return jsdata

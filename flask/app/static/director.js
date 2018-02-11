@@ -35,6 +35,11 @@ $(document).ready(function() {
 		$par = '#tr' + this.id;
 		inv = $($par).find('.inv_inv').html();
 		$.ajax({type: "POST", url:"/del_invites", data:{'invite': inv}, async: true, success: function( data ){ console.log(data); }});
+		for(var i = 0; i < invites.length; ++i)
+			if(invites[i].invite == inv){
+				invites.splice(i, 1);
+				break;
+			}
 		$($par).remove()
 		// console.log($par);
 		// res = $($par).find(".inv_name").html();
