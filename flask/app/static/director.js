@@ -1,6 +1,9 @@
 $(document).ready(function() {
 	var school = '30';
 	var teachers;
+	var invites;
+	getInvites();
+
 	$('#get_data').click(function(){
 		getData();
 		outputInfo();
@@ -13,6 +16,55 @@ $(document).ready(function() {
 	$('#save_fields').click(function(){
 		saveFields();
 	});
+	$('#manage_rel').click(function(){
+		hideAll();
+		displayUsers();
+	});
+	$('#add_per_rel').click(function(){
+		hideAll();
+		displayInvites();
+		$el = $('#add_person');
+		$el.css("display","block");
+	});
+	$('.titi').click(function(){
+		$par = $(this).parent();
+		res = $($par).find("input[name='tutu']").val();
+		console.log(res);
+	});
+	$("#cur_invites").on("click", ".del_but", function(){
+		$par = '#tr' + this.id;
+		inv = $($par).find('.inv_inv').html();
+		$.ajax({type: "POST", url:"/del_invites", data:{'invite': inv}, async: true, success: function( data ){ console.log(data); }});
+		$($par).remove()
+		// console.log($par);
+		// res = $($par).find(".inv_name").html();
+		// console.log(res);
+		// res = $($par).find(".inv_inv").html();
+		// console.log(res);
+	});
+	function getInvites() {
+		$.ajax({type: "GET", url:"/cur_invites", data:{'school': school}, async:false, success: function( data ){ invites = JSON.parse(data); }});
+	}
+
+	function displayInvites() {
+		$area = $("#cur_invites");
+		var html = "";
+		$area.html("");
+		
+		html += '<tr><td>Имя</td><td>Класс</td><td>Роль</td><td>Пригласительный</td></tr>';
+		for(var i = 0; i < invites.length; ++i){
+			but = '<td><button class="del_but" id="'+invites[i].invite+'">X</button></td>'
+			html += '<tr id="tr'+invites[i].invite+'"><td class="inv_name">'+invites[i].name+'</td><td>'+invites[i].class+'</td><td>'+invites[i].role+'</td><td class="inv_inv">'+invites[i].invite+'</td>' + but + '</tr>';
+		}
+		$(html).appendTo($area);
+	}
+
+	function hideAll() {
+		$arr = $('.hid_bl');
+		$arr.each(function(i,elem){
+			$(elem).css("display","none");
+		});
+	}
 
 	function getData() {
 		$.ajax({type: "GET", url:"/get_teachers", data:{'school': school}, async:false, success: function( data ){ teachers = JSON.parse(data);  }});
@@ -51,11 +103,13 @@ $(document).ready(function() {
 			role = $(elem).find("select[name='role']").val();
 			invite = Math.random().toString(36).substring(2, 12);
 			arr.push({"school": school, "name": name, "class": cl, "role": role, "invite": invite});
+			invites.push({"school": school, "name": name, "class": cl, "role": role, "invite": invite});
 		});
 		$.ajax({type: "POST", url:"/invite_save", data:{'str': JSON.stringify(arr)}, async:false, success: function( data ){ console.log(data);  }});
+		displayInvites();
 	}
 	function addField() {
-		$area = $("#add_person");
+		$area = $("#enter_area");
 		select = '<select name="role"><option>Учитель</option><option>Ученик</option></select>'
 		html = '<div class="dirik"><input type="text" value="Имя Фамилия" class="dir_add" name="name"><input type="text" value="Класс" class="dir_add" name="cl">'+select;
 

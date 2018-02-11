@@ -2,9 +2,7 @@
 function send() {
 	$login = $("#login").val();
 	$password = $("#password").val();
-	$name = $("#name").val();
-	$classs = $("#classs").val();
-	$school = $("#school").val();
+	$invite = $("#invite").val();
 	
 	if($password.length < 6){
 		var $block = $("#password_block");
@@ -12,7 +10,7 @@ function send() {
 			$block.append("<p id = \"paslen\" align=\"center\" style=\"color: red;\">Длина пароля не может быть меньше 6</p>");
 		return;
 	}
-	check_login($login, $password, $name, $school, $classs);
+	check_login($login, $password, $invite);
 
 }
 function refresh() {
@@ -21,9 +19,9 @@ function refresh() {
 	if($('p').is("#paslen"))
 		$('#paslen').remove()
 }
-function check_login(login, password,name,school,classs) {
+function check_login(login, password, invite) {
 	var correct_login;
-	$.ajax({url:"/correct_reg",data:{"login": login, "password": password, "name": name, "school":school,"class":classs}, async:false, success:function( data ){  
+	$.ajax({url:"/correct_reg",data:{"login": login, "password": password, "invite": invite}, async:false, success:function( data ){  
 		if(data == 'error') {
 			var $block = $("#textlog");
 			if(!$('p').is("#wrong")){
