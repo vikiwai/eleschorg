@@ -257,3 +257,62 @@ def del_invites():
 	f.write(s)
 	f.close()
 	return jsdata
+
+@app.route('/get_users', methods='GET')
+def get_users():
+	jsdata = request.args.get('school')
+	f = open("database.json", "r")
+	s = f.read().decode('utf-8')
+	f.close()
+	u = json.loads(s)
+	train = pd.DataFrame(u)
+	arr = train[train['school'] == jsdata]
+	del arr['password']
+	arr = arr.to_dict('records')
+	return json.dumps(arr)
+
+@app.route('/del_user', methods=['POST'])
+def del_user():
+	jsdata = request.form.get('str')
+	data = json.loads(jsdata)
+	del_from_hierarchy(data['school'], data['class'], data['login'])
+	del_from_database(data['login'])
+	return 'success'
+
+def del_from_hierarchy(school, cl, login):
+	f = open("hierarchy.json", "r")
+	s = f.read().decode('utf-8')
+	f.close()
+	u = json.loads(s)
+	for sc in u:
+		if(sc['name'] == school):
+			if(cl == ''):
+				for tea in sc['teachers']:
+					if(tea['login'] == login):
+						sc['teachers'].remove(tea)
+						f = open("hierarchy.json", "w")
+						f.write(json.dumps(u))
+						f.close()
+						return
+			else:
+				for pup in sc['pupils']:
+					if(pup['login'] == login):
+						sc['pupils'].remove(pup)
+						f = open("hierarchy.json", "w")
+						f.write(json.dumps(u))
+						f.close()
+						return
+
+def del_from_database(login):
+	f = open("database.json", "r")
+	s = f.read().decode('utf-8')
+	f.close()
+	u = json.loads(s)
+	train = pd.DataFrame(u)
+	arr = train[train['login'] != login]
+	arr = arr.to_dict('records')
+	s = json.dumps(arr)
+	f = open("database.json", "w")
+	f.write(s)
+	f.close()
+	return 
