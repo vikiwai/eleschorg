@@ -85,6 +85,25 @@ ol.formatted li {
 	list-style-type: decimal;
 }
 
+
 td {
 	border: 1px solid black;
+}
+table {
+    width: 100%;
+}
+th {
+    position: absolute;
+    left: 0;
+    width: 200px;
+    border: 1px solid black;
+}
+.outer {
+    position: relative
+}
+.inner {
+    overflow-x: scroll;
+    overflow-y: visible;
+    width: 400px;
+    margin-left: 202px;
 }

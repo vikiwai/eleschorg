@@ -258,7 +258,7 @@ def del_invites():
 	f.close()
 	return jsdata
 
-@app.route('/get_users', methods='GET')
+@app.route('/get_users', methods=['GET'])
 def get_users():
 	jsdata = request.args.get('school')
 	f = open("database.json", "r")
@@ -295,13 +295,15 @@ def del_from_hierarchy(school, cl, login):
 						f.close()
 						return
 			else:
-				for pup in sc['pupils']:
-					if(pup['login'] == login):
-						sc['pupils'].remove(pup)
-						f = open("hierarchy.json", "w")
-						f.write(json.dumps(u))
-						f.close()
-						return
+				for cla in sc['classes']:
+					if(cla['name'] == cl):
+						for pup in cla['pupils']:
+							if(pup['login'] == login):
+								sc['pupils'].remove(pup)
+								f = open("hierarchy.json", "w")
+								f.write(json.dumps(u))
+								f.close()
+								return
 
 def del_from_database(login):
 	f = open("database.json", "r")
@@ -316,3 +318,65 @@ def del_from_database(login):
 	f.write(s)
 	f.close()
 	return 
+
+def create_journal(school, cl, subject):
+	f = open('database.json','r')
+	s = f.read()
+	u = json.loads(s)
+	train = pd.DataFrame(u)
+	df = pd.read_csv('example.csv')
+	base = train[train['school']==school]
+	base = base[base['class']==cl]
+	for i in range(len(base)):
+	    arr = []
+	    arr.append(base.iloc[i]['name'])
+	    for i in range(len(df.columns)-1):
+	        arr.append('')
+	    df.loc[len(df)] = arr
+	path = u'app\\static\\school\\'+school+'\\'+cl+'\\'+subject+'.csv'
+	df.to_csv(path, index_label=False,index=False,encoding='utf-8')
+
+def get_json_journal(school,cl,subject):
+	path = u'app\\static\\school\\'+school+'\\'+cl+'\\'+subject+'.csv'
+	arr = pd.read_csv(path,encoding = "utf-8")
+	arr = arr.to_dict('records')
+	return json.dumps(arr)
+
+@app.route('/get_marks', methods=['GET'])
+def get_marks():
+	school = request.args.get('school')
+	cl = request.args.get('class')
+	sub = request.args.get('subject')
+	return get_json_journal(school,cl,sub)
+
+@app.route('/save_mark', methods=['POST'])
+def save_mark():
+	jsdata = request.form.get('str')
+	data = json.loads(jsdata)
+	pos = int(data['position'])
+	date = data['date']
+	msg = data['msg']
+	school = data['school']
+	cl = data['cl']
+	sub = data['sub']
+	path = u'app\\static\\school\\'+school+'\\'+cl+'\\'+sub+'.csv'
+	df = pd.read_csv(path,encoding = "utf-8")
+	df.iloc[pos][date] = msg
+	df.to_csv(path, index_label=False,index=False,encoding='utf-8')
+	return 'success'
+
+@app.route('/get_classes', methods=['GET'])
+def get_classes():
+	school = request.args.get('school')
+	tea = request.args.get('teacher')
+	f = open('hierarchy.json','r')
+	s = f.read()
+	u = json.loads(s)
+	for sc in u:
+		if(sc['name'] == school):
+			for t in sc['teachers']:
+				if t['login'] == tea:
+					tr = json.dumps(t['classes'])
+					f.close()
+					return tr
+	return 'error'
