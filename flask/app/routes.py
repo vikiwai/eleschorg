@@ -6,6 +6,7 @@ from flask import redirect
 from flask import url_for
 import json
 import pandas as pd
+import os
 
 app.debug = True
 
@@ -380,3 +381,30 @@ def get_classes():
 					f.close()
 					return tr
 	return 'error'
+
+@app.route('/get_grades', methods=['GET'])
+def get_grades():
+	school = request.args.get('school')
+	cl = request.args.get('class')
+	name = request.args.get('name').encode('utf-8')
+	return grades(name, school, cl)
+
+def grades(name, school, cl):
+	path = u'app\\static\\school\\'+school+'\\'+cl+'\\'
+	names = os.listdir(path)
+	dfpup = pd.read_csv('example.csv')
+	s = dfpup.columns
+	dfpup.loc[len(dfpup)] = s
+	for sub in names:
+	    temp = pd.read_csv(path+sub)
+	    row = temp[temp['pup'] == name]
+	    print(temp)
+	    s = sub[:len(sub)-4:]
+	    row.iloc[0]['pup'] = s
+	    dfpup = pd.concat([dfpup,row])
+	dfpup = dfpup.to_dict('records')
+	return json.dumps(dfpup)
+
+@app.route('/dnevnik')
+def dnevnik():
+	return render_template('dnevnik.html')

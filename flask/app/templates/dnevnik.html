@@ -1,0 +1,21 @@
+<html>
+<head>
+	<title>Журнал</title>
+	
+	<link rel='stylesheet' type='text/css' href='{{ url_for('static', filename='reset.css') }}' />
+	<link rel='stylesheet' type='text/css' href='{{ url_for('static', filename='libs/jquery-ui.css') }}' />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='journalstyle.css') }}" />
+
+	<script type='text/javascript' src='{{ url_for('static', filename='libs/jquery-1.11.1.min.js') }}' charset="utf-8"></script>
+	<script type='text/javascript' src='{{ url_for('static', filename='libs/jquery-ui.min.js') }}' charset="utf-8"></script>
+	<script type='text/javascript' src='{{ url_for('static', filename='dnevnik.js') }}' charset="utf-8"></script>
+</head>
+<body>
+	
+	<div id="header"></div>
+	<div id="journal"></div>
+	<div id="comment">
+		<div id="contentholder"></div>
+	</div>
+</body>
+</html>
