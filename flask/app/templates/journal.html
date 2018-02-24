@@ -6,18 +6,32 @@
 	<link rel='stylesheet' type='text/css' href='{{ url_for('static', filename='libs/jquery-ui.css') }}' />
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='journalstyle.css') }}" />
 
-	<script type='text/javascript' src='{{ url_for('static', filename='libs/jquery-1.11.1.min.js') }}' charset="utf-8"></script>
-	<script type='text/javascript' src='{{ url_for('static', filename='libs/jquery-ui.min.js') }}' charset="utf-8"></script>
-	<script type='text/javascript' src='{{ url_for('static', filename='journal.js') }}' charset="utf-8"></script>
+	
 </head>
 <body>
-	<select name="cl"></select>
-	<select name="sub"></select>
-	<button id="load">Загрузить</button>
-	<div id="header"></div>
-	<div id="journal"></div>
-	<div id="comment">
-		<div id="contentholder"></div>
+	<div id="header">
+		<div class="hd" id="cal_panel">Календарь</div>
+		<div class="hd" id="admin_panel" style="display: none;">Панель директора</div>
+		<div class="hd" id="pupil_page" style="display: none;">Оценки</div>
 	</div>
+	<div id="content">
+		<select name="cl"></select>
+		<select name="sub"></select>
+		<button id="load">Загрузить</button>
+		<div id="journal"></div>
+		<div id="comment">
+			<div id="contentholder"></div>
+		</div>
+		<div class="user_info">
+	    	<div id="school_info">{{ school }}</div>
+	    	<div id="login_info">{{ login }}</div>
+	    	<div id="name_info">{{ username }}</div>
+	    	<div id="admin">{{ admin }}</div>
+	    	<div id="pupil">{{ pupil }}</div>
+	    </div> 
+	</div>
+    <script type='text/javascript' src='{{ url_for('static', filename='libs/jquery-1.11.1.min.js') }}' charset="utf-8"></script>
+	<script type='text/javascript' src='{{ url_for('static', filename='libs/jquery-ui.min.js') }}' charset="utf-8"></script>
+	<script type='text/javascript' src='{{ url_for('static', filename='journal.js') }}' charset="utf-8"></script>
 </body>
 </html>

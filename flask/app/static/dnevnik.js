@@ -1,13 +1,32 @@
 $(document).ready(function() {
-	var school = '30';
-	var cl = '7а';
+	var school = $('#school_info').text();
+   var login = $('#login_info').text();
+   var admin = $("#admin").text();
+   var pupil = $("#pupil").text();
+   if(admin=='1')
+      $("#admin_panel").css('display','inline');
+   if(admin=='0')
+      $('#pupil_page').css('display','inline');   
+   var name = $('#name_info').text();
+   $('#cal_panel').click(function(){
+      data = '/?username='+name+'&login='+login+'&admin='+admin+'&pupil='+pupil+'&school='+school;
+      window.location.href = "http://localhost:5000"+data;
+   });
+   $('#admin_panel').click(function(){
+      data = '/director?username='+name+'&login='+login+'&admin='+admin+'&pupil='+pupil+'&school='+school;
+      window.location.href = "http://localhost:5000"+data;
+   });
+   $('#pupil_page').click(function(){
+      data = '/journal?username='+name+'&login='+login+'&admin='+admin+'&pupil='+pupil+'&school='+school;
+      window.location.href = "http://localhost:5000"+data;
+   });
 	var arr;
 	var classes;
 	var k;
 	var n;
 	var headers = [];
 	var key;
-	var name = 'Мамонтов Александр';
+	
 	loadMarks();
 	$("#journal").on('click', '.mark', function(){
 		
@@ -28,14 +47,13 @@ $(document).ready(function() {
 	         open: function(){
 	         	rex = /.com./;
          		cell = arr[arrch[0]][arrch[1]].split(rex);
-         		console.log($('#'+text).html('ghghk'));
          		if(cell.length == 2){
-         			com = '<div>Оценка: '+cell[0]+'"</div><br>';
-         			com += '<div>Комментарий: '+cell[1]+'"</div>';
+         			com = '<div>Оценка: '+cell[0]+'</div><br>';
+         			com += '<div>Комментарий: '+cell[1]+'</div>';
          			$("#comment").html(com);
          		}
          		else {
-         			com = '<div>Оценка: '+cell[0]+'"</div><br>';
+         			com = '<div>Оценка: '+cell[0]+'</div><br>';
          			$("#comment").html(com);
          		}
 			 },
@@ -59,7 +77,7 @@ $(document).ready(function() {
 	}
 	
 	function loadMarks() {
-		$.ajax({url:"/get_grades", data:{'school':school, 'class': cl, 'name': name}, async:false, success:function( data ){ arr = JSON.parse(data); }});
+		$.ajax({url:"/get_grades", data:{'school':school, 'login': login, 'name': name}, async:false, success:function( data ){ arr = JSON.parse(data); }});
 		k = arr.length;
 		for(key in arr[0]) {
 			if(key!='pup')

@@ -1,15 +1,36 @@
 $(document).ready(function() {
-	var school = '30';
+	var school = $('#school_info').text();
+	var login = $('#login_info').text();
+	var admin = $("#admin").text();
+	var pupil = $("#pupil").text();
+	if(admin=='1')
+		$("#admin_panel").css('display','inline');
+	if(admin=='0')
+		$('#pupil_page').css('display','inline');
+	var name = $('#name_info').text();
 	var teachers;
 	var invites;
 	var users;
 	getInvites();
 	getUsers();
-
-	$('#get_data').click(function(){
+	$('#manage_teachers').click(function(){
+		hideAll();
 		getData();
 		outputInfo();
-		
+		$el = $('#teachers');
+		$el.css("display","block");
+	});
+	$('#cal_panel').click(function(){
+		data = '/?username='+name+'&login='+login+'&admin='+admin+'&pupil='+pupil+'&school='+school;
+		window.location.href = "http://localhost:5000"+data;
+	});
+	$('#admin_panel').click(function(){
+		data = '/director?username='+name+'&login='+login+'&admin='+admin+'&pupil='+pupil+'&school='+school;
+		window.location.href = "http://localhost:5000"+data;
+	});
+	$('#pupil_page').click(function(){
+		data = '/journal?username='+name+'&login='+login+'&admin='+admin+'&pupil='+pupil+'&school='+school;
+		window.location.href = "http://localhost:5000"+data;
 	});
 	$('#add_field').click(function(){
 		addField();
@@ -61,7 +82,7 @@ $(document).ready(function() {
 		$.ajax({type: "GET", url:"/get_users", data:{'school': school}, async:false, success: function( data ){ console.log(data); users = JSON.parse(data); }})
 	}
 	function getInvites() {
-		$.ajax({type: "GET", url:"/cur_invites", data:{'school': school}, async:false, success: function( data ){ invites = JSON.parse(data); }});
+		$.ajax({type: "GET", url:"/cur_invites", data:{'school': school}, async:false, success: function( data ){ console.log(data); invites = JSON.parse(data); }});
 	}
 
 	function displayInvites() {
@@ -101,17 +122,8 @@ $(document).ready(function() {
 	}
 	function outputInfo() {
 		$tea = $('#teachers');
-		$subjects = $('#subjects');
-		subArr = teachers.subjects;
 		teaArr = teachers.teachers;
 		var html = "";
-		$subjects.html("");
-		for(var i = 0; i < subArr.length; ++i)
-			html += '<p>'+subArr[i]+'</p>';
-
-		$(html).appendTo($subjects);
-
-		html = "";
 		$tea.html("");
 		for(var i = 0; i < teaArr.length; ++i){
 			html += '<p class="teacher" id ="'+teaArr[i].login+'">' + teaArr[i].name + ':</p>';
@@ -119,7 +131,6 @@ $(document).ready(function() {
 				html += '<p style="margin-left: 20px;">' + teaArr[i].classes[z].name + ': ' + teaArr[i].classes[z].subject + '</p>';
 		}		$(html).appendTo($tea);
 		$('.teacher').click(function(){
-			console.log(teachers.classes);
 			addClass(this.id);
 		});
 	}

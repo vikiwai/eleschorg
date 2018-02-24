@@ -1130,9 +1130,8 @@ var person = {
                 eventos.end = JSON.stringify(calEvent.end).replace('\"'," ");
               }
            });
-           var q = JSON.stringify(window.person);
-           $.ajax({type: "POST", url:"/refresh_data", data:{'str': q}, async:false});
-           
+           var login = $('#login_info').text();
+           var school = $('#school_info').text();           
          }
          $calEvent.data("calEvent", calEvent);
       },
