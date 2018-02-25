@@ -1,0 +1,19 @@
+<html>
+<head>
+	<title>Журнал</title>
+	
+	<link rel='stylesheet' type='text/css' href='{{ url_for('static', filename='reset.css') }}' />
+	<link rel='stylesheet' type='text/css' href='{{ url_for('static', filename='libs/css/smoothness/jquery-ui-1.8rc3.custom.css') }}' />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='journalstyle.css') }}">
+	<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js' charset="utf-8"></script>
+	<script type='text/javascript' src='{{ url_for('static', filename='libs/jquery-ui-1.8rc3.custom.min.js') }}' charset="utf-8"></script>
+	<script type='text/javascript' src='{{ url_for('static', filename='journal.js') }}' charset="utf-8"></script>
+</head>
+<body>
+	<div id="header"></div>
+	<div id="journal"></div>
+	<div id="comment">
+		<div id="contentholder"></div>
+	</div>
+</body>
+</html>

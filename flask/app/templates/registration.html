@@ -1,0 +1,51 @@
+<html>
+<head>
+	<title>Регистрация</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='regstyle.css') }}">
+	<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js' charset="utf-8"></script>
+	<script type='text/javascript' src='{{ url_for('static', filename='libs/jquery-ui-1.8rc3.custom.min.js') }}' charset="utf-8"></script>
+	<script type='text/javascript' src='{{ url_for('static', filename='registration.js') }}' charset="utf-8"></script>
+</head>
+<body>
+	<div id="header"></div>
+	<div id="reg-form">
+	<form class="form-3">
+		<div id="textlog">
+		<p class="clearfix">
+	        <div id="reg_block">
+	        <input type="text" name="name" id="name" placeholder="Имя" onclick="refresh()">
+	    	</div>
+	    </p>
+	    <p class="clearfix">
+	        <div id="log_block">
+	        <input type="text" name="login" id="login" placeholder="Логин" onclick="refresh()">
+	    	</div>
+	    </p>
+	    <p class="clearfix">
+	        <div id="password_block">
+	        <input type="password" name="password" id="password" placeholder="Пароль" onclick="refresh()">
+	    	</div>
+	    </p>
+	    <p class="clearfix">
+	        <div id="school_block">
+	        <input type="text" name="name" id="school" placeholder="Школа" onclick="refresh()">
+	    	</div>
+	    </p>
+	    <p class="clearfix">
+	        <div id="class_block">
+	        <input type="text" name="name" id="classs" placeholder="Класс" onclick="refresh()">
+	    	</div>
+	    </p>
+		</div>
+	    <div class="regbut">
+		    <div class="reg" id="reglink">
+		        <a href="/login.html" id="log"> Логин </a>
+		    </div>
+		    <div class="reg">
+		        <button type="button" id="button" onclick="send()">Регистрация</button>
+		    </div>  
+	    </div>    
+	</form>
+	</div>
+</body>
+</html>
