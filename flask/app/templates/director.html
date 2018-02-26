@@ -3,10 +3,10 @@
 	<title>Журнал</title>
 	
 	<link rel='stylesheet' type='text/css' href='{{ url_for('static', filename='reset.css') }}' />
-	<link rel='stylesheet' type='text/css' href='https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css' />
+	<link rel='stylesheet' type='text/css' href='{{ url_for('static', filename='libs/jquery-ui.css') }}' />
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='journalstyle.css') }}">
-	<script type='text/javascript' src='https://code.jquery.com/jquery-1.11.1.min.js' charset="utf-8"></script>
-	<script type='text/javascript' src='https://code.jquery.com/ui/1.11.1/jquery-ui.min.js' charset="utf-8"></script>
+	<script type='text/javascript' src='{{ url_for('static', filename='libs/jquery-1.11.1.min.js') }}' charset="utf-8"></script>
+	<script type='text/javascript' src='{{ url_for('static', filename='libs/jquery-ui.min.js') }}' charset="utf-8"></script>
 	<script type='text/javascript' src='{{ url_for('static', filename='director.js') }}' charset="utf-8"></script>
 </head>
 <body>
@@ -20,6 +20,27 @@
 		<input type="text" name="sub_enter">
 		<p>Выберите класс:</p>
 		<select id="sel_cl" name="cl"></select>
+	</div>
+	<div id="menu">
+		<div id="add_per_rel">Приглашения</div>
+		<div id="manage_rel">Управление пользователями</div>
+	</div>
+	<div class="hid_bl" id="add_person" style="display: none;">
+		<div id="enter_area" style="overflow-y: scroll;"></div>
+		<button id="add_field">Добавить поле</button>
+		<button id="save_fields">Сохранить</button>
+		<div id="cur_invites"><p>Активные инвайты:</p></div>
+	</div>
+	<div class="hid_bl" id="manage" style="display: none;">
+		<div id="cur_users"></div>
+	</div>
+	<div>
+		<input type="text" name="tutu" placeholder="tatata">
+		<button class='titi'>ass</button>
+	</div>
+	<div>
+		<input type="text" name="tutu" placeholder="tatata">
+		<button class='titi'>ass</button>
 	</div>
 </body>
 </html>

@@ -44,7 +44,7 @@ html, body {
 #reglink {
   margin-top: 10px;
 }
-#login, #password, #name, #school, #classs {
+#login, #password, #invite, #name, #school, #classs {
   font-family: "Roboto", sans-serif;
   outline: 0;
   background: #f2f2f2;

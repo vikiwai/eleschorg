@@ -5,6 +5,7 @@ from flask import request
 from flask import redirect
 from flask import url_for
 import json
+import pandas as pd
 
 app.debug = True
 
@@ -61,33 +62,61 @@ def correct_login():
 def registration():
 	return render_template('registration.html')
 
+# @app.route('/correct_reg')
+# def correct_reg():
+# 	login = str(request.args.get('login'))
+# 	password = str(request.args.get('password'))
+# 	name = request.args.get('name').encode('utf-8')
+# 	school = str(request.args.get('school'))
+# 	classs = request.args.get('class').encode('utf-8')
+# 	f = open('database.json','r')
+# 	s = f.read().decode('utf-8')
+# 	u = json.loads(s)
+# 	for i in u:
+# 		if(i['login'] == login):
+# 			return 'error'
+
 @app.route('/correct_reg')
 def correct_reg():
 	login = str(request.args.get('login'))
 	password = str(request.args.get('password'))
-	name = request.args.get('name').encode('utf-8')
-	school = str(request.args.get('school'))
-	classs = request.args.get('classs').encode('utf-8')
+	invite = str(request.args.get('invite'))
+
 	f = open('database.json','r')
 	s = f.read().decode('utf-8')
+	f.close()
+	f = open('waiting_list.json','r')
+	s2 = f.read().decode('utf-8')
+	f.close()
 	u = json.loads(s)
-	for i in u:
-		if(i['login'] == login):
-			return 'error'
+	u2 = json.loads(s2)
+	for inv in u2:
+		if(inv['invite'] == invite):
+			for i in u:
+				if(i['login'] == login):
+					return 'error'
+			u.append({"login":login, "password":password, "name":inv['name'], "role": inv['role'], "school": inv['school'], "class": inv['class']})	
+			s = json.dumps(u)
+			f = open('database.json','w')
+			f.write(s)
+			f.close()
+			f = open(u'app\\static\\events\\' + login + u'.json','w')
+			f.close()
+			a = inv['name']
+			append_to_class(inv['school'], inv['class'], login, inv['name'])
+			u2.remove(inv)
+			f = open('waiting_list.json', 'w')
+			s = json.dumps(u2)
+			f.write(s)
+			f.close()
+			return url_for('index',username=a,login=login)
+	return 'error'
+	
 
-	u.append({"login":login,"password":password,"name":name, role: "pupil","school":school,"classs":classs})
-	s = json.dumps(u)
-	f.close()
-	f = open('database.json','w')
-	f.write(s)
-	f.close()
-	f = open(u'app\\static\\events\\' + login + u'.json','w')
-	f.close()
-	append_to_class(school, classs, login, name)
-	return url_for('index',username=name,login=login)
-
+	
+	
 def append_to_class(school, classs, login, name):
-	f = open('hierarchy.json',r)
+	f = open('hierarchy.json','r')
 	s = f.read().decode('utf-8')
 	u = json.loads(s)
 	for sch in u:
@@ -185,3 +214,105 @@ def set_teacher():
 					q.close()
 					return 'success'
 	return 'success'
+
+@app.route('/invite_save', methods=['POST'])
+def invite_save():
+	jsdata = request.form.get('str')
+	u = json.loads(jsdata)
+	f = open('waiting_list.json','r')
+	s = f.read().decode('utf-8')
+	f.close()
+	data = json.loads(s)
+	for i in u:
+		data.append(i)
+	f = open('waiting_list.json','w')
+	f.write(json.dumps(data))
+	f.close()
+	return 'success'
+
+@app.route('/cur_invites', methods=['GET'])
+def cur_invites():
+	jsdata = request.args.get('school')
+	f = open("waiting_list.json", "r")
+	s = f.read().decode('utf-8')
+	f.close()
+	u = json.loads(s)
+	train = pd.DataFrame(u)
+	arr = train[train['school'] == jsdata]
+	arr = arr.to_dict('records')
+	return json.dumps(arr)
+
+@app.route('/del_invites', methods=['POST'])
+def del_invites():
+	jsdata = request.form.get('invite')
+	f = open("waiting_list.json", "r")
+	s = f.read().decode('utf-8')
+	f.close()
+	u = json.loads(s)
+	train = pd.DataFrame(u)
+	arr = train[train['invite'] != jsdata]
+	arr = arr.to_dict('records')
+	s = json.dumps(arr)
+	f = open("waiting_list.json", "w")
+	f.write(s)
+	f.close()
+	return jsdata
+
+@app.route('/get_users', methods='GET')
+def get_users():
+	jsdata = request.args.get('school')
+	f = open("database.json", "r")
+	s = f.read().decode('utf-8')
+	f.close()
+	u = json.loads(s)
+	train = pd.DataFrame(u)
+	arr = train[train['school'] == jsdata]
+	del arr['password']
+	arr = arr.to_dict('records')
+	return json.dumps(arr)
+
+@app.route('/del_user', methods=['POST'])
+def del_user():
+	jsdata = request.form.get('str')
+	data = json.loads(jsdata)
+	del_from_hierarchy(data['school'], data['class'], data['login'])
+	del_from_database(data['login'])
+	return 'success'
+
+def del_from_hierarchy(school, cl, login):
+	f = open("hierarchy.json", "r")
+	s = f.read().decode('utf-8')
+	f.close()
+	u = json.loads(s)
+	for sc in u:
+		if(sc['name'] == school):
+			if(cl == ''):
+				for tea in sc['teachers']:
+					if(tea['login'] == login):
+						sc['teachers'].remove(tea)
+						f = open("hierarchy.json", "w")
+						f.write(json.dumps(u))
+						f.close()
+						return
+			else:
+				for pup in sc['pupils']:
+					if(pup['login'] == login):
+						sc['pupils'].remove(pup)
+						f = open("hierarchy.json", "w")
+						f.write(json.dumps(u))
+						f.close()
+						return
+
+def del_from_database(login):
+	f = open("database.json", "r")
+	s = f.read().decode('utf-8')
+	f.close()
+	u = json.loads(s)
+	train = pd.DataFrame(u)
+	arr = train[train['login'] != login]
+	arr = arr.to_dict('records')
+	s = json.dumps(arr)
+	f = open("database.json", "w")
+	f.write(s)
+	f.close()
+	return 
