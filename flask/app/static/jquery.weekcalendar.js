@@ -739,8 +739,8 @@ var person = {
             if(filtr[t] == calEvent.filtr)
                 break;
 
-         if(t == filtr.length)
-            return; // Нет события в данном фильтре
+         // if(t == filtr.length)
+         //    return; // Нет события в данном фильтре
 
          if (calEvent.start.getTime() > calEvent.end.getTime()) {
             return; // can't render a negative height
@@ -887,13 +887,13 @@ var person = {
          var options = this.options;
          var filtr = options.filtres;
          
-           
+         
          for(t = 0; t < filtr.length; ++t)
             if(filtr[t] == calEvent.filtr)
                 break;
 
-         if(t == filtr.length)
-            return; // Нет события в данном фильтре
+         // if(t == filtr.length)
+         //    return; // Нет события в данном фильтре
          self._cleanEvent(calEvent);
 
          if (calEvent.id) {
@@ -913,6 +913,7 @@ var person = {
             self._positionEvent($weekDay, $calEvent);
             self._adjustOverlappingEvents($weekDay);
          }
+         self._renderCalendar();
       },
 
       /*

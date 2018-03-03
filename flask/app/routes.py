@@ -603,7 +603,6 @@ def grades(name, school, cl):
 	for sub in names:
 	    temp = pd.read_csv(path+sub)
 	    row = temp[temp['pup'] == name]
-	    print(temp)
 	    s = sub[:len(sub)-4:]
 	    row.iloc[0]['pup'] = s
 	    dfpup = pd.concat([dfpup,row])

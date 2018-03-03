@@ -210,10 +210,7 @@ $(document).ready(function() {
 
    function setupFiltresFields($filtrField, calEvent) {
       var $dialogContent = $("#event_edit_container");
-      var $daddy = $dialogContent.find('select[name=\'filtr\']').children();
-      if($daddy.length > 1){
-         return;
-      }
+      var $daddy = $dialogContent.find('select[name=\'filtr\']').html('');
       var person = getEventData();
       var filtres = person.filtres;
       for(var i = 0; i < filtres.length; ++i){

@@ -96,8 +96,8 @@ $(document).ready(function() {
 			html += "<td class=\"heading\" id=\""+headers[i]+"\">"+headers[i]+"</td>";
 		html += "</tr>";
 		for(var i = 1; i < k; ++i) {
-			html += "<tr><th class=\"left\" id=\""+arr[i].pup+"\">"+arr[i].pup+"</th>";
-			for(var z = 0; z < n; ++z){
+			html += "<tr><th class=\"left\" id=\""+arr[i].pup+"\">"+arr[i].pup+"</th><td class=\"mark\" id=\""+i+"_"+headers[0]+"\">5</td>";
+			for(var z = 1; z < n; ++z){
 				rex = /.com./;
 	         	cell = arr[i][headers[z]].split(rex);
 				html += "<td class=\"mark\" id=\""+i+"_"+headers[z]+"\">"+cell[0]+"</td>";
