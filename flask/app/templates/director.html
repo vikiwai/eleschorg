@@ -1,18 +1,44 @@
 <html>
 <head>
-	<title>Журнал</title>
+	<title>Панель директора</title>
 	
 	<link rel='stylesheet' type='text/css' href='{{ url_for('static', filename='reset.css') }}' />
 	<link rel='stylesheet' type='text/css' href='{{ url_for('static', filename='libs/jquery-ui.css') }}' />
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='journalstyle.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='directorstyle.css') }}">
 	<script type='text/javascript' src='{{ url_for('static', filename='libs/jquery-1.11.1.min.js') }}' charset="utf-8"></script>
 	<script type='text/javascript' src='{{ url_for('static', filename='libs/jquery-ui.min.js') }}' charset="utf-8"></script>
 	<script type='text/javascript' src='{{ url_for('static', filename='director.js') }}' charset="utf-8"></script>
 </head>
 <body>
-	<button id='get_data'>Тык</button>
-	<div id="teachers">Вот они:</div>
-	<div id="subjects">Предметы:</div>
+	<div id="header">
+		<div class="hd" id="cal_panel">Календарь</div>
+		<div class="hd" id="admin_panel" style="display: none;">Панель директора</div>
+		<div class="hd" id="pupil_page" style="display: none;">Оценки</div>
+	</div>
+	<div class="menu">
+		<!-- <button id='get_data'>Тык</button>
+		<div id="teachers">Вот они:</div>
+		<div id="subjects">Предметы:</div> -->
+		
+		<div id="menu">
+			<div id="manage_teachers">Учителя</div>
+			<div id="add_per_rel">Приглашения</div>
+			<div id="manage_rel">Управление пользователями</div>
+		</div>
+	</div>
+	<div class="content">
+		<div class="hid_bl" id="teachers" style="display: none;"></div>
+		<div class="hid_bl" id="add_person" style="display: none;">
+			<div id="enter_area" style="overflow-y: scroll;"></div>
+			<button id="add_field">Добавить поле</button>
+			<button id="save_fields">Сохранить</button>
+			<div id="cur_invites"><p>Активные инвайты:</p></div>
+		</div>
+		<div class="hid_bl" id="manage" style="display: none;">
+			<div id="cur_users"></div>
+		</div>
+	</div>
+
 	<div id="add_class" style="display: none;">
 		<p>Выберите предмет:</p>
 		<select id="sel_sub" name="sub"></select>
@@ -21,26 +47,12 @@
 		<p>Выберите класс:</p>
 		<select id="sel_cl" name="cl"></select>
 	</div>
-	<div id="menu">
-		<div id="add_per_rel">Приглашения</div>
-		<div id="manage_rel">Управление пользователями</div>
-	</div>
-	<div class="hid_bl" id="add_person" style="display: none;">
-		<div id="enter_area" style="overflow-y: scroll;"></div>
-		<button id="add_field">Добавить поле</button>
-		<button id="save_fields">Сохранить</button>
-		<div id="cur_invites"><p>Активные инвайты:</p></div>
-	</div>
-	<div class="hid_bl" id="manage" style="display: none;">
-		<div id="cur_users"></div>
-	</div>
-	<div>
-		<input type="text" name="tutu" placeholder="tatata">
-		<button class='titi'>ass</button>
-	</div>
-	<div>
-		<input type="text" name="tutu" placeholder="tatata">
-		<button class='titi'>ass</button>
-	</div>
+    <div class="user_info">
+    	<div id="school_info">{{ school }}</div>
+    	<div id="login_info">{{ login }}</div>
+    	<div id="name_info">{{ username }}</div>
+    	<div id="admin">{{ admin }}</div>
+    	<div id="pupil">{{ pupil }}</div>
+    </div>   
 </body>
 </html>

@@ -1,13 +1,36 @@
 $(document).ready(function() {
-	var school = '30';
+	var school = $('#school_info').text();
+	var login = $('#login_info').text();
+	var admin = $("#admin").text();
+	var pupil = $("#pupil").text();
+	if(admin=='1')
+		$("#admin_panel").css('display','inline');
+	if(admin=='0')
+		$('#pupil_page').css('display','inline');
+	var name = $('#name_info').text();
 	var teachers;
 	var invites;
+	var users;
 	getInvites();
-
-	$('#get_data').click(function(){
+	getUsers();
+	$('#manage_teachers').click(function(){
+		hideAll();
 		getData();
 		outputInfo();
-		
+		$el = $('#teachers');
+		$el.css("display","block");
+	});
+	$('#cal_panel').click(function(){
+		data = '/?username='+name+'&login='+login+'&admin='+admin+'&pupil='+pupil+'&school='+school;
+		window.location.href = "http://localhost:5000"+data;
+	});
+	$('#admin_panel').click(function(){
+		data = '/director?username='+name+'&login='+login+'&admin='+admin+'&pupil='+pupil+'&school='+school;
+		window.location.href = "http://localhost:5000"+data;
+	});
+	$('#pupil_page').click(function(){
+		data = '/journal?username='+name+'&login='+login+'&admin='+admin+'&pupil='+pupil+'&school='+school;
+		window.location.href = "http://localhost:5000"+data;
 	});
 	$('#add_field').click(function(){
 		addField();
@@ -16,9 +39,12 @@ $(document).ready(function() {
 	$('#save_fields').click(function(){
 		saveFields();
 	});
+	
 	$('#manage_rel').click(function(){
 		hideAll();
 		displayUsers();
+		$el = $('#manage');
+		$el.css("display","block");
 	});
 	$('#add_per_rel').click(function(){
 		hideAll();
@@ -26,10 +52,19 @@ $(document).ready(function() {
 		$el = $('#add_person');
 		$el.css("display","block");
 	});
-	$('.titi').click(function(){
-		$par = $(this).parent();
-		res = $($par).find("input[name='tutu']").val();
-		console.log(res);
+	$("#cur_users").on('click', '.del_user', function(){
+		$par = '#' + this.id;
+		text = $($par).find('.class').html();
+		inv = {'school': school, 'class': text, 'login': this.id};
+		str = JSON.stringify(inv);
+		console.log(inv)
+		$.ajax({type: "POST", url:"/del_user", data:{'str': str}, async: true, success: function( data ){ console.log(data); }});
+		for(var i = 0; i < users.length; ++i)
+			if(users[i].login == inv){
+				users.splice(i, 1);
+				break;
+			}
+		$($par).remove();
 	});
 	$("#cur_invites").on("click", ".del_but", function(){
 		$par = '#tr' + this.id;
@@ -40,15 +75,14 @@ $(document).ready(function() {
 				invites.splice(i, 1);
 				break;
 			}
-		$($par).remove()
-		// console.log($par);
-		// res = $($par).find(".inv_name").html();
-		// console.log(res);
-		// res = $($par).find(".inv_inv").html();
-		// console.log(res);
+		$($par).remove();
 	});
+
+	function getUsers() {
+		$.ajax({type: "GET", url:"/get_users", data:{'school': school}, async:false, success: function( data ){ console.log(data); users = JSON.parse(data); }})
+	}
 	function getInvites() {
-		$.ajax({type: "GET", url:"/cur_invites", data:{'school': school}, async:false, success: function( data ){ invites = JSON.parse(data); }});
+		$.ajax({type: "GET", url:"/cur_invites", data:{'school': school}, async:false, success: function( data ){ console.log(data); invites = JSON.parse(data); }});
 	}
 
 	function displayInvites() {
@@ -60,6 +94,18 @@ $(document).ready(function() {
 		for(var i = 0; i < invites.length; ++i){
 			but = '<td><button class="del_but" id="'+invites[i].invite+'">X</button></td>'
 			html += '<tr id="tr'+invites[i].invite+'"><td class="inv_name">'+invites[i].name+'</td><td>'+invites[i].class+'</td><td>'+invites[i].role+'</td><td class="inv_inv">'+invites[i].invite+'</td>' + but + '</tr>';
+		}
+		$(html).appendTo($area);
+	}
+	function displayUsers() {
+		$area = $("#cur_users");
+		var html = "";
+		$area.html("");
+		
+		html += '<tr><td>Имя</td><td>Класс</td><td>Роль</td></tr>';
+		for(var i = 0; i < users.length; ++i){
+			but = '<td><button class="del_user" id="'+users[i].login+'">X</button></td>'
+			html += '<tr id="'+users[i].login+'"><td class="inv_name">'+users[i].name+'</td><td class="class">'+users[i].class+'</td><td>'+users[i].role+'</td>' + but + '</tr>';
 		}
 		$(html).appendTo($area);
 	}
@@ -76,17 +122,8 @@ $(document).ready(function() {
 	}
 	function outputInfo() {
 		$tea = $('#teachers');
-		$subjects = $('#subjects');
-		subArr = teachers.subjects;
 		teaArr = teachers.teachers;
 		var html = "";
-		$subjects.html("");
-		for(var i = 0; i < subArr.length; ++i)
-			html += '<p>'+subArr[i]+'</p>';
-
-		$(html).appendTo($subjects);
-
-		html = "";
 		$tea.html("");
 		for(var i = 0; i < teaArr.length; ++i){
 			html += '<p class="teacher" id ="'+teaArr[i].login+'">' + teaArr[i].name + ':</p>';
@@ -94,7 +131,6 @@ $(document).ready(function() {
 				html += '<p style="margin-left: 20px;">' + teaArr[i].classes[z].name + ': ' + teaArr[i].classes[z].subject + '</p>';
 		}		$(html).appendTo($tea);
 		$('.teacher').click(function(){
-			console.log(teachers.classes);
 			addClass(this.id);
 		});
 	}

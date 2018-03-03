@@ -1,6 +1,26 @@
 $(document).ready(function() {
 
-   var tuti = new Date();
+   var school = $('#school_info').text();
+   var login = $('#login_info').text();
+   var admin = $("#admin").text();
+   var pupil = $("#pupil").text();
+   if(admin=='1')
+      $("#admin_panel").css('display','inline');
+   if(admin=='0')
+      $('#pupil_page').css('display','inline');   
+   var name = $('#name_info').text();
+   $('#cal_panel').click(function(){
+      data = '/?username='+name+'&login='+login+'&admin='+admin+'&pupil='+pupil+'&school='+school;
+      window.location.href = "http://localhost:5000"+data;
+   });
+   $('#admin_panel').click(function(){
+      data = '/director?username='+name+'&login='+login+'&admin='+admin+'&pupil='+pupil+'&school='+school;
+      window.location.href = "http://localhost:5000"+data;
+   });
+   $('#pupil_page').click(function(){
+      data = '/journal?username='+name+'&login='+login+'&admin='+admin+'&pupil='+pupil+'&school='+school;
+      window.location.href = "http://localhost:5000"+data;
+   });
    
    var $calendar = $('#calendar');
    var id = 10;
@@ -57,14 +77,10 @@ $(document).ready(function() {
                   calEvent.title = titleField.val();
                   calEvent.body = bodyField.val();
                   calEvent.filtr = $dialogContent.find("select[name='filtr']").val();
-                  console.log(calEvent);
-                  sendDirTest(calEvent);
                   var person = getEventData();
                   person.events.push(calEvent);
-                  var q = JSON.stringify(person);
+                  var q = JSON.stringify({'login':login,'school':school,'events':person});
                   $.ajax({type: "POST", url:"/refresh_data", data:{'str': q}, async:false});
-                  //$.post("/refresh_data", {"str": q}, function( data ){  });
-
                   $calendar.weekCalendar("removeUnsavedEvents");
                   $calendar.weekCalendar("updateEvent", calEvent);
                   $dialogContent.dialog("close");
@@ -152,10 +168,8 @@ $(document).ready(function() {
    });
    var a;
    function sendDirTest(calEVent) {
-      var data = {'school':'30', 'event': calEVent};
+      var data = {'school':school, 'event': calEVent};
       var str = JSON.stringify(data);
-
-      console.log(str);
       $.ajax({type: "POST", url:"/add_school_event", data:{'str': str}, async:false, success:function( data ){ console.log(1);}});
    }
    function resetForm($dialogContent) {
@@ -164,8 +178,7 @@ $(document).ready(function() {
    }
 
    function getEventData() {
-      var login = $('#login').text();
-      $.ajax({url:"/get_data", data:{'login': login}, async:false, success:function( data ){ a = data; }});
+      $.ajax({url:"/get_data", data:{'login': login,'school':school}, async:false, success:function( data ){ a = data; }});
       var arr = JSON.parse(a);
       return arr;
    }
@@ -239,24 +252,6 @@ $(document).ready(function() {
    });
 
 
-   var $about = $("#about");
-
-   $("#about_button").click(function() {
-      $about.dialog({
-         title: "About this calendar demo",
-         width: 600,
-         close: function() {
-            $about.dialog("destroy");
-            $about.hide();
-         },
-         buttons: {
-            close : function() {
-               $about.dialog("close");
-            }
-         }
-      }).show();
-   });
-
    var $filtr_con = $("#addfil");
 
    $("#add_filtr").click(function() {
@@ -279,7 +274,8 @@ $(document).ready(function() {
                      }        
                   if(t == person.filtres.length)
                      person.filtres.push(name);
-                  var q = JSON.stringify(person);
+                  
+                  var q = JSON.stringify({'login':login,'school':school,'events': person});
                   $.ajax({type: "POST", url: "/refresh_data", async:false, data: {str: q}, success: function( data ){ }});
                   $calendar.weekCalendar("updateCalendar");       
                   $filtr_con.dialog("close");
